@@ -84,23 +84,35 @@
         tools:text="Vote" />
 
     <TextView
-        android:id="@+id/text_view_description"
-        style="@style/Titles"
-        android:layout_marginTop="8dp"
-        android:gravity="start"
-        app:layout_constraintStart_toStartOf="@+id/image_view_movie_front"
-        app:layout_constraintTop_toBottomOf="@+id/image_view_movie_front" />
-
-    <TextView
         android:id="@+id/text_view_movie_description"
         style="@style/SubTitles"
         android:layout_height="0dp"
+        android:ellipsize="end"
         android:gravity="start"
         android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_view_description"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_description"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/image_view_movie_front"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_movie_front"
         tools:text="Description" />
+
+    <Button
+        android:foreground="?attr/selectableItemBackground"
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_red"
+        android:text="@string/show_recommendations"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_movie_description" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/image_view_movie_front"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_movie_front" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

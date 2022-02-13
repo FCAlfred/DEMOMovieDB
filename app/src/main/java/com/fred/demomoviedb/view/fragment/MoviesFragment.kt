@@ -77,7 +77,6 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
             mRatedMoviesAdapter = MoviesAdapter(mutableListOf(), this@MoviesFragment)
             recyclerRated.adapter = mRatedMoviesAdapter
         }
-
         getPopularMovies()
         getRatedMovies()
     }
@@ -153,8 +152,7 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
                 getString(R.string.no_internet_connection),
                 Toasty.LENGTH_SHORT,
                 true
-            )
-                .show()
+            ).show()
             binding.apply {
                 shimmer.hideShimmer()
                 imageViewConnectionStatus.setVisible(true)
