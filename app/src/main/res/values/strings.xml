@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">DEMOMovieDB</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="url_load_image">https://image.tmdb.org/t/p/w342</string>
+    <string name="no_internet_connection">SIN CONEXIÓN A INTERNET</string>
 </resources>

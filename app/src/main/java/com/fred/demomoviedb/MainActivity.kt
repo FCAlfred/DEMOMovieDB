@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initComponents()
+        binding.viewPager2.isUserInputEnabled = false
     }
 
     private fun initComponents() {
