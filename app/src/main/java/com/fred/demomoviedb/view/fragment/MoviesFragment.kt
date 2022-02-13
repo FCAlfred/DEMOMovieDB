@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fred.demomoviedb.R
 import com.fred.demomoviedb.databinding.FragmentMoviesBinding
+import com.fred.demomoviedb.model.DataSource
 import com.fred.demomoviedb.model.Movie
 import com.fred.demomoviedb.usecases.MoviesRepository
 import com.fred.demomoviedb.utils.add
@@ -19,6 +21,7 @@ import com.fred.demomoviedb.utils.setVisible
 import com.fred.demomoviedb.view.adapter.MoviesAdapter
 import com.fred.demomoviedb.viewModel.MovieViewModel
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.launch
 
 class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
 
@@ -51,7 +54,7 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
         movieViewModel.setMovieSelected(selectedMovie)
         requireActivity().supportFragmentManager.add(
             R.id.main_container,
-            DetailsFragment.newInstance(),
+            DetailsFragment.newInstance(DataSource.MOVIE),
             DetailsFragment.NAME
         )
     }
@@ -90,19 +93,24 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
     }
 
     private fun getPopularMovies() {
-        MoviesRepository.getPopularMovies(
-            popularMoviePage,
-            onSuccess = ::onPopularMoviesFetched,
-            onError = ::onError
-        )
+        movieViewModel.viewModelScope.launch {
+            MoviesRepository.getPopularMovies(
+                popularMoviePage,
+                onSuccess = ::onPopularMoviesFetched,
+                onError = ::onError
+            )
+        }
+
     }
 
     private fun getRatedMovies() {
-        MoviesRepository.getTopRatedMovies(
-            ratedMoviePage,
-            onSuccess = ::onTopRatedMoviesFetched,
-            onError = ::onError
-        )
+        movieViewModel.viewModelScope.launch {
+            MoviesRepository.getTopRatedMovies(
+                ratedMoviePage,
+                onSuccess = ::onTopRatedMoviesFetched,
+                onError = ::onError
+            )
+        }
     }
 
     private fun onPopularMoviesFetched(movies: List<Movie>) {

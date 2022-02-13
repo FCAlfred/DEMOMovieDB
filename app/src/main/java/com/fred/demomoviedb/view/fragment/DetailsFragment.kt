@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fred.demomoviedb.R
 import com.fred.demomoviedb.databinding.FragmentDetailsBinding
+import com.fred.demomoviedb.model.DataSource
 import com.fred.demomoviedb.model.Movie
 import com.fred.demomoviedb.usecases.MoviesRepository
 import com.fred.demomoviedb.utils.setGoneVisibility
@@ -17,15 +19,16 @@ import com.fred.demomoviedb.utils.setVisible
 import com.fred.demomoviedb.view.adapter.MoviesAdapter
 import com.fred.demomoviedb.viewModel.MovieViewModel
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.launch
 
-class DetailsFragment : Fragment(), MoviesAdapter.MovieActions {
+class DetailsFragment(private val source: DataSource) : Fragment(), MoviesAdapter.MovieActions {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private val movieViewModel: MovieViewModel by activityViewModels()
     private lateinit var mRecommendationsMoviesAdapter: MoviesAdapter
     private lateinit var recommendedMoviesLayout: LinearLayoutManager
-    private var recommendedMoviePage: Int = 1
+    private var recommendedPage: Int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,17 +92,34 @@ class DetailsFragment : Fragment(), MoviesAdapter.MovieActions {
                 recyclerRecommendation.layoutManager = recommendedMoviesLayout
                 recyclerRecommendation.adapter = mRecommendationsMoviesAdapter
             }
-            getRecommendationMovies(it.id)
+            if (source.name == "MOVIE") {
+                getRecommendationMovies(it.id)
+            } else {
+                getRecommendationShow(it.id)
+            }
         }
     }
 
     private fun getRecommendationMovies(id: Long) {
-        MoviesRepository.getRecommendationMovies(
-            id,
-            recommendedMoviePage,
-            onSuccess = ::onRecommendationMoviesFetched,
-            onError = ::onError
-        )
+        movieViewModel.viewModelScope.launch {
+            MoviesRepository.getRecommendationMovies(
+                id,
+                recommendedPage,
+                onSuccess = ::onRecommendationMoviesFetched,
+                onError = ::onError
+            )
+        }
+    }
+
+    private fun getRecommendationShow(id: Long) {
+        movieViewModel.viewModelScope.launch {
+            MoviesRepository.getRecommendationShow(
+                id,
+                recommendedPage,
+                onSuccess = ::onRecommendationMoviesFetched,
+                onError = ::onError
+            )
+        }
     }
 
     private fun onRecommendationMoviesFetched(movies: List<Movie>) {
@@ -112,6 +132,6 @@ class DetailsFragment : Fragment(), MoviesAdapter.MovieActions {
 
     companion object {
         val NAME: String = DetailsFragment::class.java.simpleName
-        fun newInstance() = DetailsFragment()
+        fun newInstance(source: DataSource) = DetailsFragment(source)
     }
 }

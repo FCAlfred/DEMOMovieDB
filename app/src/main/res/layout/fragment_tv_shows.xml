@@ -1,14 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.TvShowsFragment">
+    tools:context=".view.fragment.TvShowsFragment"
+    tools:ignore="ContentDescription">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="TV SHOWS" />
+        android:layout_marginTop="5dp">
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/main_container_shows_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/text_view_popular_shows_title"
+                style="@style/Titles"
+                android:text="Popular Shows" />
+
+            <TextView
+                android:id="@+id/text_view_popular_shows_subtitle"
+                style="@style/SubTitles"
+                android:text="Most Popular Shows" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_popular_shows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:id="@+id/text_view_rated_shows_title"
+                style="@style/Titles"
+                android:text="Rated Shows"
+                tools:text="Rated"
+                tools:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_view_rated_shows_subtitle"
+                style="@style/SubTitles"
+                android:text="Best Rated Shows"
+                tools:textColor="@color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_rated_shows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.fred.demomoviedb.components.ShimmerSkeleton
+        android:id="@+id/shimmer_shows"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/image_view_shows_connection_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="100dp"
+        android:src="@drawable/ic_no_wifi"
+        android:visibility="invisible"
+        app:tint="@color/white"
+        tools:visibility="gone" />
+
+    <Button
+        android:id="@+id/reconnecting_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reconnect"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
