@@ -72,4 +72,14 @@
         android:visibility="invisible"
         app:tint="@color/white"
         tools:visibility="gone" />
+
+    <Button
+        android:id="@+id/reconnecting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reconnect"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

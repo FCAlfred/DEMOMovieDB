@@ -76,6 +76,14 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
             recyclerRated.layoutManager = ratedMoviesLayout
             mRatedMoviesAdapter = MoviesAdapter(mutableListOf(), this@MoviesFragment)
             recyclerRated.adapter = mRatedMoviesAdapter
+
+            reconnecting.setOnClickListener {
+                it.setVisible(false)
+                shimmer.showShimmer()
+                imageViewConnectionStatus.setVisible(false)
+                getPopularMovies()
+                getRatedMovies()
+            }
         }
         getPopularMovies()
         getRatedMovies()
@@ -147,7 +155,7 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
 
     private fun onError() {
         Handler(Looper.getMainLooper()).postDelayed({
-            Toasty.error(
+            Toasty.info(
                 requireContext(),
                 getString(R.string.no_internet_connection),
                 Toasty.LENGTH_SHORT,
@@ -156,6 +164,7 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
             binding.apply {
                 shimmer.hideShimmer()
                 imageViewConnectionStatus.setVisible(true)
+                reconnecting.setVisible(true)
                 mainContainerList.setVisible(false)
             }
         }, 2000)

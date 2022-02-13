@@ -31,4 +31,11 @@ class ShimmerSkeleton(
         shimmerContainerTwo.stopShimmer()
     }
 
+    fun showShimmer() {
+        shimmerContainerOne.setGoneVisibility(false)
+        shimmerContainerOne.startShimmer()
+        shimmerContainerTwo.setGoneVisibility(false)
+        shimmerContainerTwo.startShimmer()
+    }
+
 }

@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">DEMOMovieDB</string>
     <string name="url_load_image">https://image.tmdb.org/t/p/w342</string>
-    <string name="no_internet_connection">SIN CONEXIÓN A INTERNET</string>
+    <string name="no_internet_connection">Turn ON Wi-Fi and try again</string>
     <string name="show_recommendations">Show Recommendations</string>
     <string name="hide_recommendations">Hide Recommendations</string>
+    <string name="reconnect">Try to Reconnect</string>
 </resources>
