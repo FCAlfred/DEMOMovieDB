@@ -4,55 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.MoviesFragment">
+    tools:context=".view.fragment.MoviesFragment"
+    tools:ignore="ContentDescription">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="@dimen/scroll_view_margin_top">
 
         <LinearLayout
             android:id="@+id/main_container_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="@dimen/scroll_view_container_margin_start"
             android:orientation="vertical"
             android:visibility="invisible">
 
             <TextView
                 android:id="@+id/text_view_popular_title"
                 style="@style/Titles"
-                android:text="Popular Movies" />
+                android:text="@string/popular_movies" />
 
             <TextView
                 android:id="@+id/text_view_popular_subtitle"
                 style="@style/SubTitles"
-                android:text="Most Popular Movies" />
+                android:text="@string/most_popular_movies" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_popular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="@dimen/recycler_view_general_margin_top" />
 
             <TextView
                 android:id="@+id/text_view_rated_title"
                 style="@style/Titles"
-                android:text="Rated Movies"
+                android:text="@string/rated_movies"
                 tools:text="Rated"
                 tools:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/text_view_rated_subtitle"
                 style="@style/SubTitles"
-                android:text="Best Rated Movies"
+                android:text="@string/best_rated_movies"
                 tools:textColor="@color/white" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_rated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="@dimen/recycler_view_general_margin_top" />
 
         </LinearLayout>
     </ScrollView>
@@ -67,7 +68,7 @@
         android:id="@+id/image_view_connection_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="100dp"
+        android:padding="@dimen/image_view_movies_padding"
         android:src="@drawable/ic_no_wifi"
         android:visibility="invisible"
         app:tint="@color/white"
@@ -79,7 +80,7 @@
         android:layout_height="wrap_content"
         android:text="@string/reconnect"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="@dimen/button_reconnect_text_size"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

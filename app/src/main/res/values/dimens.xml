@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Item Shimmer-->
+    <dimen name="item_shimmer_image_width">120dp</dimen>
+    <dimen name="item_shimmer_image_height">180dp</dimen>
+    <dimen name="item_shimmer_image_margin_start">10dp</dimen>
+    <dimen name="item_shimmer_text_margin_top">5dp</dimen>
+    <dimen name="item_shimmer_text_height">15dp</dimen>
+
+    <!--Item Movie-->
+    <dimen name="item_movie_container_margin_end">10dp</dimen>
+    <dimen name="item_movie_container_margin_bottom">4dp</dimen>
+    <dimen name="item_movie_image_view_height">200dp</dimen>
+
+    <!--Skeleton Shimmer Component-->
+    <dimen name="shimmer_one_margin_start">10dp</dimen>
+    <dimen name="shimmer_one_margin_top">10dp</dimen>
+    <dimen name="shimmer_container_item_text_general_width">150dp</dimen>
+    <dimen name="shimmer_container_item_text_general_height">20dp</dimen>
+    <dimen name="shimmer_container_item_text_general_margin_start">10dp</dimen>
+    <dimen name="shimmer_container_item_text_general_margin_top">10dp</dimen>
+    <dimen name="shimmer_container_item_subtext_general_width">100dp</dimen>
+    <dimen name="shimmer_container_item_subtext_general_height">20dp</dimen>
+    <dimen name="shimmer_container_item_subtext_margin_top">5dp</dimen>
+    <dimen name="shimmer_container_margin_top">5dp</dimen>
+
+    <!--Tv Shows-->
+    <dimen name="general_margin_top">5dp</dimen>
+    <dimen name="main_container_margin_start">10dp</dimen>
+    <dimen name="image_view_shows_padding">100dp</dimen>
+    <dimen name="button_reconnect_text_size">24sp</dimen>
+
+    <!--Movies-->
+    <dimen name="scroll_view_margin_top">5dp</dimen>
+    <dimen name="scroll_view_container_margin_start">10dp</dimen>
+    <dimen name="recycler_view_general_margin_top">5dp</dimen>
+    <dimen name="image_view_movies_padding">100dp</dimen>
+
+    <!--Details-->
+    <dimen name="image_view_poster_details_height">300dp</dimen>
+    <dimen name="image_view_background_details_height">300dp</dimen>
+    <dimen name="image_view_front_movie_width">180dp</dimen>
+    <dimen name="image_view_front_movie_height">250dp</dimen>
+    <dimen name="image_view_front_movie_margin_start">8dp</dimen>
+    <dimen name="image_view_front_movie_margin_top">120dp</dimen>
+    <dimen name="text_view_details_title">110dp</dimen>
+    <dimen name="image_view_rate_details_margin_start">16dp</dimen>
+    <dimen name="text_view_description_details_padding">10dp</dimen>
+</resources>

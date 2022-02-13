@@ -9,8 +9,8 @@
         android:id="@+id/shimmer_container_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/shimmer_one_margin_start"
+        android:layout_marginTop="@dimen/shimmer_one_margin_top"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/text_view_popular_subtitle">
 
@@ -20,23 +20,23 @@
             android:orientation="vertical">
 
             <View
-                android:layout_width="150dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#DDD" />
+                android:layout_width="@dimen/shimmer_container_item_text_general_width"
+                android:layout_height="@dimen/shimmer_container_item_text_general_height"
+                android:layout_marginStart="@dimen/shimmer_container_item_text_general_margin_start"
+                android:layout_marginTop="@dimen/shimmer_container_item_text_general_margin_top"
+                android:background="@color/color_shimmer" />
 
             <View
-                android:layout_width="100dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#DDD" />
+                android:layout_width="@dimen/shimmer_container_item_subtext_general_width"
+                android:layout_height="@dimen/shimmer_container_item_subtext_general_height"
+                android:layout_marginStart="@dimen/shimmer_container_item_text_general_margin_start"
+                android:layout_marginTop="@dimen/shimmer_container_item_subtext_margin_top"
+                android:background="@color/color_shimmer" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/shimmer_container_margin_top"
                 android:orientation="horizontal">
 
                 <include layout="@layout/item_shimmer_movie" />
@@ -66,23 +66,23 @@
             android:orientation="vertical">
 
             <View
-                android:layout_width="150dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#DDD" />
+                android:layout_width="@dimen/shimmer_container_item_text_general_width"
+                android:layout_height="@dimen/shimmer_container_item_text_general_height"
+                android:layout_marginStart="@dimen/shimmer_container_item_text_general_margin_start"
+                android:layout_marginTop="@dimen/shimmer_container_item_text_general_margin_top"
+                android:background="@color/color_shimmer" />
 
             <View
-                android:layout_width="100dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#DDD" />
+                android:layout_width="@dimen/shimmer_container_item_subtext_general_width"
+                android:layout_height="@dimen/shimmer_container_item_subtext_general_height"
+                android:layout_marginStart="@dimen/shimmer_container_item_text_general_margin_start"
+                android:layout_marginTop="@dimen/shimmer_container_item_subtext_margin_top"
+                android:background="@color/color_shimmer" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/shimmer_container_margin_top"
                 android:orientation="horizontal">
 
                 <include layout="@layout/item_shimmer_movie" />

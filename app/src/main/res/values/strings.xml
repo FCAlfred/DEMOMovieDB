@@ -5,4 +5,12 @@
     <string name="show_recommendations">Show Recommendations</string>
     <string name="hide_recommendations">Hide Recommendations</string>
     <string name="reconnect">Try to Reconnect</string>
+    <string name="popular_shows">Popular Shows</string>
+    <string name="most_popular_shows">Most Popular Shows</string>
+    <string name="rated_shows">Rated Shows</string>
+    <string name="best_rated_shows">Best Rated Shows</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="most_popular_movies">Most Popular Movies</string>
+    <string name="rated_movies">Rated Movies</string>
+    <string name="best_rated_movies">Best Rated Movies</string>
 </resources>
