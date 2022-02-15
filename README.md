@@ -11,11 +11,12 @@ DEMOMovieDB is a gorgeous client application for [TMDb](https://www.themoviedb.o
 
 * Built on MVVM architecture pattern
 * Uses [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/), specifically Fragments, ViewModel, LiveData, viewBinding, Paging, viewPager2, RecyclerViews and Tabs.
-* Animations with [Lottie](https://github.com/airbnb/lottie-ios) from Airbnb
+* Animations with [Lottie](https://github.com/airbnb/lottie-ios) from Airbnb.
 * Uses [Retrofit](https://square.github.io/retrofit/) for making API calls.
 * Uses [Glide](https://github.com/bumptech/glide) for image loading.
 * Uses [Shimmer](https://facebook.github.io/shimmer-android/) for loading visual effect.
 * Uses [Toasty](https://github.com/GrenderG/Toasty) for custom Toast messages.
+* Uses [ROOM](https://github.com/androidx-releases/Room/releases) for local storage.
 * Main Content was Built on a Single-Activity Architecture. Every screen in the app is a fragment(except Intro).
 
 ## Features
@@ -25,12 +26,11 @@ DEMOMovieDB is a gorgeous client application for [TMDb](https://www.themoviedb.o
 * With validation if you don't have Internet connection. You Have a button to reconnect after turn on Wi-Fi.
 
 ## Screenshots
-![noConnectionApp](https://user-images.githubusercontent.com/41550868/153778821-d93980dc-bf22-4e63-bb5b-dfe7c60cd0ff.gif)
 
-![mbdApp](https://user-images.githubusercontent.com/41550868/153778822-1f37e7dc-6c01-4af9-886c-50e58f1476c5.gif)
+![RoomDb](https://user-images.githubusercontent.com/41550868/154133506-f9a64095-00fa-4e2d-8374-4af324cb7b95.gif)
+
 
 ## Planned Features
-* Implementation of ROOM Database to show content offline.
 * Implementation of Dagger/Hilt (dependency injection).
 * Implementation of a new function to be able to see Trailer movies/tvShows.
 
