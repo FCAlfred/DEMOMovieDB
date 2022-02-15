@@ -24,6 +24,7 @@ DEMOMovieDB is a gorgeous client application for [TMDb](https://www.themoviedb.o
 * See Recommendations after select a movie/tvShow from Popular or Rated.
 * View movie/tvShow details like release date, rating, overview, pictures and more, right inside the app.
 * With validation if you don't have Internet connection. You Have a button to reconnect after turn on Wi-Fi.
+* If you open the app at least once, you can view the content in offline mode (Wi-Fi off).
 
 ## Screenshots
 
