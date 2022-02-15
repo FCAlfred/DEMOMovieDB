@@ -1,7 +1,6 @@
-package com.fred.demomoviedb.usecases
+package com.fred.demomoviedb.usecases.network
 
-import com.fred.demomoviedb.model.GetMoviesResponse
-import com.fred.demomoviedb.model.Movie
+import com.fred.demomoviedb.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,14 +51,14 @@ object MoviesRepository {
 
     fun getTopRatedMovies(
         page: Int = 1,
-        onSuccess: (movies: List<Movie>) -> Unit,
+        onSuccess: (movies: List<RatedMovie>) -> Unit,
         onError: () -> Unit
     ) {
         api.getTopRatedMovies(page = page)
-            .enqueue(object : Callback<GetMoviesResponse> {
+            .enqueue(object : Callback<GetRatedMoviesResponse> {
                 override fun onResponse(
-                    call: Call<GetMoviesResponse>,
-                    response: Response<GetMoviesResponse>
+                    call: Call<GetRatedMoviesResponse>,
+                    response: Response<GetRatedMoviesResponse>
                 ) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
@@ -74,7 +73,7 @@ object MoviesRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
+                override fun onFailure(call: Call<GetRatedMoviesResponse>, t: Throwable) {
                     onError.invoke()
                 }
             })
@@ -113,20 +112,20 @@ object MoviesRepository {
 
     fun getPopularShows(
         page: Int = 1,
-        onSuccess: (movies: List<Movie>) -> Unit,
+        onSuccess: (shows: List<Show>) -> Unit,
         onError: () -> Unit
     ) {
         api.getPopularShows(page = page)
-            .enqueue(object : Callback<GetMoviesResponse> {
+            .enqueue(object : Callback<GetShowsResponse> {
                 override fun onResponse(
-                    call: Call<GetMoviesResponse>,
-                    response: Response<GetMoviesResponse>
+                    call: Call<GetShowsResponse>,
+                    response: Response<GetShowsResponse>
                 ) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
 
                         if (responseBody != null) {
-                            onSuccess.invoke(responseBody.movies)
+                            onSuccess.invoke(responseBody.shows)
                         } else {
                             onError.invoke()
                         }
@@ -135,7 +134,7 @@ object MoviesRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
+                override fun onFailure(call: Call<GetShowsResponse>, t: Throwable) {
                     onError.invoke()
                 }
             })
@@ -143,20 +142,20 @@ object MoviesRepository {
 
     fun getRatedShows(
         page: Int = 1,
-        onSuccess: (movies: List<Movie>) -> Unit,
+        onSuccess: (showList: List<RatedShow>) -> Unit,
         onError: () -> Unit
     ) {
         api.getRatedShows(page = page)
-            .enqueue(object : Callback<GetMoviesResponse> {
+            .enqueue(object : Callback<GetRatedShowsResponse> {
                 override fun onResponse(
-                    call: Call<GetMoviesResponse>,
-                    response: Response<GetMoviesResponse>
+                    call: Call<GetRatedShowsResponse>,
+                    response: Response<GetRatedShowsResponse>
                 ) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
 
                         if (responseBody != null) {
-                            onSuccess.invoke(responseBody.movies)
+                            onSuccess.invoke(responseBody.shows)
                         } else {
                             onError.invoke()
                         }
@@ -165,7 +164,7 @@ object MoviesRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
+                override fun onFailure(call: Call<GetRatedShowsResponse>, t: Throwable) {
                     onError.invoke()
                 }
             })
@@ -174,20 +173,20 @@ object MoviesRepository {
     fun getRecommendationShow(
         showId: Long,
         page: Int = 1,
-        onSuccess: (movies: List<Movie>) -> Unit,
+        onSuccess: (showList: List<Show>) -> Unit,
         onError: () -> Unit
     ) {
         api.getRecommendationShow(tvId = showId, page = page)
-            .enqueue(object : Callback<GetMoviesResponse> {
+            .enqueue(object : Callback<GetShowsResponse> {
                 override fun onResponse(
-                    call: Call<GetMoviesResponse>,
-                    response: Response<GetMoviesResponse>
+                    call: Call<GetShowsResponse>,
+                    response: Response<GetShowsResponse>
                 ) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
 
                         if (responseBody != null) {
-                            onSuccess.invoke(responseBody.movies)
+                            onSuccess.invoke(responseBody.shows)
                         } else {
                             onError.invoke()
                         }
@@ -196,7 +195,38 @@ object MoviesRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<GetMoviesResponse>, t: Throwable) {
+                override fun onFailure(call: Call<GetShowsResponse>, t: Throwable) {
+                    onError.invoke()
+                }
+            })
+    }
+
+    fun getRecommendationRatedShow(
+        showId: Long,
+        page: Int = 1,
+        onSuccess: (showList: List<RatedShow>) -> Unit,
+        onError: () -> Unit
+    ) {
+        api.getRecommendationRatedShow(tvId = showId, page = page)
+            .enqueue(object : Callback<GetRatedShowsResponse> {
+                override fun onResponse(
+                    call: Call<GetRatedShowsResponse>,
+                    response: Response<GetRatedShowsResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+
+                        if (responseBody != null) {
+                            onSuccess.invoke(responseBody.shows)
+                        } else {
+                            onError.invoke()
+                        }
+                    } else {
+                        onError.invoke()
+                    }
+                }
+
+                override fun onFailure(call: Call<GetRatedShowsResponse>, t: Throwable) {
                     onError.invoke()
                 }
             })

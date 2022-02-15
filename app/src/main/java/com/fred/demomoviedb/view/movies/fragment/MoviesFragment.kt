@@ -1,4 +1,4 @@
-package com.fred.demomoviedb.view.fragment
+package com.fred.demomoviedb.view.movies.fragment
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,19 +11,23 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.fred.demomoviedb.R
+import com.fred.demomoviedb.components.Movies
 import com.fred.demomoviedb.databinding.FragmentMoviesBinding
-import com.fred.demomoviedb.model.DataSource
 import com.fred.demomoviedb.model.Movie
-import com.fred.demomoviedb.usecases.MoviesRepository
+import com.fred.demomoviedb.model.RatedMovie
+import com.fred.demomoviedb.usecases.local.MoviesDb
+import com.fred.demomoviedb.usecases.network.MoviesRepository
 import com.fred.demomoviedb.utils.add
 import com.fred.demomoviedb.utils.setVisible
-import com.fred.demomoviedb.view.adapter.MoviesAdapter
+import com.fred.demomoviedb.view.movies.adapter.MoviesAdapter
+import com.fred.demomoviedb.view.movies.adapter.MoviesRatedAdapter
 import com.fred.demomoviedb.viewModel.MovieViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 
-class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
+class MoviesFragment : Fragment(), MoviesAdapter.MovieActions, MoviesRatedAdapter.MovieActions {
 
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
@@ -33,9 +37,11 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
     private lateinit var popularMoviesLayout: LinearLayoutManager
     private var popularMoviePage: Int = 1
 
-    private lateinit var mRatedMoviesAdapter: MoviesAdapter
+    private lateinit var mRatedMoviesAdapter: MoviesRatedAdapter
     private lateinit var ratedMoviesLayout: LinearLayoutManager
     private var ratedMoviePage: Int = 1
+
+    private lateinit var localDb: MoviesDb
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,12 +60,27 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
         movieViewModel.setMovieSelected(selectedMovie)
         requireActivity().supportFragmentManager.add(
             R.id.main_container,
-            DetailsFragment.newInstance(DataSource.MOVIE),
+            DetailsFragment.newInstance(Movies.POPULAR),
+            DetailsFragment.NAME
+        )
+    }
+
+    override fun onClickedRatedMovie(selectedMovie: RatedMovie) {
+        movieViewModel.setRatedMovieSelected(selectedMovie)
+        requireActivity().supportFragmentManager.add(
+            R.id.main_container,
+            DetailsFragment.newInstance(Movies.RATED),
             DetailsFragment.NAME
         )
     }
 
     private fun initComponents() {
+        localDb = Room.databaseBuilder(
+            requireContext(),
+            MoviesDb::class.java,
+            "PopularMovies"
+        )
+            .build()
         popularMoviesLayout = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.HORIZONTAL,
@@ -77,7 +98,7 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
             recyclerPopular.adapter = mPopularMoviesAdapter
 
             recyclerRated.layoutManager = ratedMoviesLayout
-            mRatedMoviesAdapter = MoviesAdapter(mutableListOf(), this@MoviesFragment)
+            mRatedMoviesAdapter = MoviesRatedAdapter(mutableListOf(), this@MoviesFragment)
             recyclerRated.adapter = mRatedMoviesAdapter
 
             reconnecting.setOnClickListener {
@@ -100,7 +121,6 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
                 onError = ::onError
             )
         }
-
     }
 
     private fun getRatedMovies() {
@@ -114,6 +134,13 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
     }
 
     private fun onPopularMoviesFetched(movies: List<Movie>) {
+        movieViewModel.viewModelScope.launch {
+            if (localDb.movieDao().getAllMovies().isNullOrEmpty()) {
+                localDb.movieDao().insertMovieList(movies)
+            } else {
+                localDb.movieDao().updateMovieList(movies)
+            }
+        }
         Handler(Looper.getMainLooper()).postDelayed({
             binding.apply {
                 shimmer.hideShimmer()
@@ -124,7 +151,14 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
         }, 1500)
     }
 
-    private fun onTopRatedMoviesFetched(movies: List<Movie>) {
+    private fun onTopRatedMoviesFetched(movies: List<RatedMovie>) {
+        movieViewModel.viewModelScope.launch {
+            if (localDb.ratedMovieDao().getAllRatedMovies().isNullOrEmpty()) {
+                localDb.ratedMovieDao().insertRatedMovieList(movies)
+            } else {
+                localDb.ratedMovieDao().updateRatedMovieList(movies)
+            }
+        }
         mRatedMoviesAdapter.appendMovies(movies)
         attachTopRatedMoviesOnScrollListener()
     }
@@ -162,24 +196,48 @@ class MoviesFragment : Fragment(), MoviesAdapter.MovieActions {
     }
 
     private fun onError() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            Toasty.info(
-                requireContext(),
-                getString(R.string.no_internet_connection),
-                Toasty.LENGTH_SHORT,
-                true
-            ).show()
-            binding.apply {
-                shimmer.hideShimmer()
-                imageViewConnectionStatus.setVisible(true)
-                reconnecting.setVisible(true)
-                mainContainerList.setVisible(false)
-            }
-        }, 2000)
+        validateLocalDb()
+    }
+
+    private fun validateLocalDb() {
+        movieViewModel.viewModelScope.launch {
+            val localMovieList = localDb.movieDao().getAllMovies()
+            val localRatedMoviesList = localDb.ratedMovieDao().getAllRatedMovies()
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (localMovieList.isNullOrEmpty()) {
+                    Toasty.info(
+                        requireContext(),
+                        getString(R.string.no_internet_connection),
+                        Toasty.LENGTH_SHORT,
+                        true
+                    ).show()
+                    binding.apply {
+                        shimmer.hideShimmer()
+                        imageViewConnectionStatus.setVisible(true)
+                        reconnecting.setVisible(true)
+                        mainContainerList.setVisible(false)
+                    }
+                } else {
+                    binding.apply {
+                        shimmer.hideShimmer()
+                        mainContainerList.setVisible(true)
+                    }
+                    mPopularMoviesAdapter.appendMovies(localMovieList)
+                    mRatedMoviesAdapter.appendMovies(localRatedMoviesList)
+                    attachPopularMoviesOnScrollListener()
+                    Toasty.info(
+                        requireContext(),
+                        getString(R.string.offline_mode),
+                        Toasty.LENGTH_SHORT,
+                        true
+                    ).show()
+                }
+            }, 2000)
+        }
     }
 
     companion object {
-        const val NAME = "Movies"
+        const val NAME = "movies"
         fun newInstance() = MoviesFragment()
     }
 }

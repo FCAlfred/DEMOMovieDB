@@ -1,4 +1,4 @@
-package com.fred.demomoviedb.view.fragment
+package com.fred.demomoviedb.view.shows.fragment
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,31 +11,37 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.fred.demomoviedb.R
+import com.fred.demomoviedb.components.TvShows
 import com.fred.demomoviedb.databinding.FragmentTvShowsBinding
-import com.fred.demomoviedb.model.DataSource
-import com.fred.demomoviedb.model.Movie
-import com.fred.demomoviedb.usecases.MoviesRepository
+import com.fred.demomoviedb.model.RatedShow
+import com.fred.demomoviedb.model.Show
+import com.fred.demomoviedb.usecases.local.MoviesDb
+import com.fred.demomoviedb.usecases.network.MoviesRepository
 import com.fred.demomoviedb.utils.add
 import com.fred.demomoviedb.utils.setVisible
-import com.fred.demomoviedb.view.adapter.MoviesAdapter
+import com.fred.demomoviedb.view.shows.adapter.ShowsAdapter
+import com.fred.demomoviedb.view.shows.adapter.ShowsRatedAdapter
 import com.fred.demomoviedb.viewModel.MovieViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 
-class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
+class TvShowsFragment : Fragment(), ShowsAdapter.ShowsActions, ShowsRatedAdapter.ShowsActions {
 
     private var _binding: FragmentTvShowsBinding? = null
     private val binding get() = _binding!!
-    private val movieViewModel: MovieViewModel by activityViewModels()
+    private val showViewModel: MovieViewModel by activityViewModels()
 
-    private lateinit var mPopularShowsAdapter: MoviesAdapter
+    private lateinit var mPopularShowsAdapter: ShowsAdapter
     private lateinit var popularShowsLayout: LinearLayoutManager
     private var popularShowPage: Int = 1
 
-    private lateinit var mRatedShowsAdapter: MoviesAdapter
+    private lateinit var mRatedShowsAdapter: ShowsRatedAdapter
     private lateinit var ratedShowsLayout: LinearLayoutManager
     private var ratedShowPage: Int = 1
+
+    private lateinit var localDb: MoviesDb
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,16 +56,30 @@ class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
         initComponents()
     }
 
-    override fun onClickedMovie(selectedMovie: Movie) {
-        movieViewModel.setMovieSelected(selectedMovie)
+    override fun onClickedShow(selectedShow: Show) {
+        showViewModel.setShowSelected(selectedShow)
         requireActivity().supportFragmentManager.add(
             R.id.main_container,
-            DetailsFragment.newInstance(DataSource.SHOW),
-            DetailsFragment.NAME
+            DetailsShowFragment.newInstance(TvShows.POPULAR),
+            DetailsShowFragment.NAME
+        )
+    }
+
+    override fun onClickedRatedShow(selectedShow: RatedShow) {
+        showViewModel.setRatedShowSelected(selectedShow)
+        requireActivity().supportFragmentManager.add(
+            R.id.main_container,
+            DetailsShowFragment.newInstance(TvShows.RATED),
+            DetailsShowFragment.NAME
         )
     }
 
     private fun initComponents() {
+        localDb = Room.databaseBuilder(
+            requireContext(),
+            MoviesDb::class.java,
+            "PopularShows"
+        ).build()
         popularShowsLayout = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.HORIZONTAL,
@@ -73,11 +93,11 @@ class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
 
         binding.apply {
             recyclerPopularShows.layoutManager = popularShowsLayout
-            mPopularShowsAdapter = MoviesAdapter(mutableListOf(), this@TvShowsFragment)
+            mPopularShowsAdapter = ShowsAdapter(mutableListOf(), this@TvShowsFragment)
             recyclerPopularShows.adapter = mPopularShowsAdapter
 
             recyclerRatedShows.layoutManager = ratedShowsLayout
-            mRatedShowsAdapter = MoviesAdapter(mutableListOf(), this@TvShowsFragment)
+            mRatedShowsAdapter = ShowsRatedAdapter(mutableListOf(), this@TvShowsFragment)
             recyclerRatedShows.adapter = mRatedShowsAdapter
 
             reconnectingShow.setOnClickListener {
@@ -93,7 +113,7 @@ class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
     }
 
     private fun getPopularShows() {
-        movieViewModel.viewModelScope.launch {
+        showViewModel.viewModelScope.launch {
             MoviesRepository.getPopularShows(
                 popularShowPage,
                 onSuccess = ::onPopularShowsFetched,
@@ -103,7 +123,7 @@ class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
     }
 
     private fun getRatedShows() {
-        movieViewModel.viewModelScope.launch {
+        showViewModel.viewModelScope.launch {
             MoviesRepository.getRatedShows(
                 ratedShowPage,
                 onSuccess = ::onTopRatedShowsFetched,
@@ -112,19 +132,33 @@ class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
         }
     }
 
-    private fun onPopularShowsFetched(movies: List<Movie>) {
+    private fun onPopularShowsFetched(shows: List<Show>) {
+        showViewModel.viewModelScope.launch {
+            if (localDb.showDao().getAllShows().isNullOrEmpty()) {
+                localDb.showDao().insertShowList(shows)
+            } else {
+                localDb.showDao().updateShowList(shows)
+            }
+        }
         Handler(Looper.getMainLooper()).postDelayed({
             binding.apply {
                 shimmerShows.hideShimmer()
                 mainContainerShowsList.setVisible(true)
             }
-            mPopularShowsAdapter.appendMovies(movies)
+            mPopularShowsAdapter.appendMovies(shows)
             attachPopularShowsOnScrollListener()
         }, 1500)
     }
 
-    private fun onTopRatedShowsFetched(movies: List<Movie>) {
-        mRatedShowsAdapter.appendMovies(movies)
+    private fun onTopRatedShowsFetched(shows: List<RatedShow>) {
+        showViewModel.viewModelScope.launch {
+            if (localDb.ratedShowDao().getAllRatedShows().isNullOrEmpty()) {
+                localDb.ratedShowDao().insertRatedShowsList(shows)
+            } else {
+                localDb.ratedShowDao().updateRatedShowsList(shows)
+            }
+        }
+        mRatedShowsAdapter.appendMovies(shows)
         attachTopRatedShowsOnScrollListener()
     }
 
@@ -161,20 +195,45 @@ class TvShowsFragment : Fragment(), MoviesAdapter.MovieActions {
     }
 
     private fun onError() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            Toasty.info(
-                requireContext(),
-                getString(R.string.no_internet_connection),
-                Toasty.LENGTH_SHORT,
-                true
-            ).show()
-            binding.apply {
-                shimmerShows.hideShimmer()
-                imageViewShowsConnectionStatus.setVisible(true)
-                reconnectingShow.setVisible(true)
-                mainContainerShowsList.setVisible(false)
-            }
-        }, 2000)
+        validateLocalDb()
+    }
+
+    private fun validateLocalDb() {
+        showViewModel.viewModelScope.launch {
+            val localShowList = localDb.showDao().getAllShows()
+            val localRatedShowsList = localDb.ratedShowDao().getAllRatedShows()
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (localShowList.isNullOrEmpty()) {
+                    Toasty.info(
+                        requireContext(),
+                        getString(R.string.no_internet_connection),
+                        Toasty.LENGTH_SHORT,
+                        true
+                    ).show()
+                    binding.apply {
+                        shimmerShows.hideShimmer()
+                        imageViewShowsConnectionStatus.setVisible(true)
+                        reconnectingShow.setVisible(true)
+                        mainContainerShowsList.setVisible(false)
+                    }
+                } else {
+                    binding.apply {
+                        shimmerShows.hideShimmer()
+                        mainContainerShowsList.setVisible(true)
+                    }
+                    mPopularShowsAdapter.appendMovies(localShowList)
+                    mRatedShowsAdapter.appendMovies(localRatedShowsList)
+                    attachPopularShowsOnScrollListener()
+                    attachTopRatedShowsOnScrollListener()
+                    Toasty.info(
+                        requireContext(),
+                        getString(R.string.offline_mode),
+                        Toasty.LENGTH_SHORT,
+                        true
+                    ).show()
+                }
+            }, 2000)
+        }
     }
 
     companion object {

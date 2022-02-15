@@ -1,24 +1,25 @@
-package com.fred.demomoviedb.view.adapter
+package com.fred.demomoviedb.view.shows.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.fred.demomoviedb.R
 import com.fred.demomoviedb.databinding.ItemMovieBinding
-import com.fred.demomoviedb.model.Movie
+import com.fred.demomoviedb.model.RatedShow
+import com.fred.demomoviedb.model.Show
 import com.fred.demomoviedb.utils.setImage
 
-class MoviesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+class ShowsRatedViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding = ItemMovieBinding.bind(view)
 
-    fun onBindView(movieInfo: Movie) {
+    fun onBindView(showInfo: RatedShow) {
         binding.apply {
             setImage(
                 view.context,
-                view.resources.getString(R.string.url_load_image) + movieInfo.posterPath,
+                view.resources.getString(R.string.url_load_image) + showInfo.posterPath,
                 imageViewItemMovie
             )
-            textViewItemTitle.text = movieInfo.title
+            textViewItemTitle.text = showInfo.name
         }
     }
 }

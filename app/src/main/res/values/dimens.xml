@@ -25,13 +25,13 @@
     <dimen name="shimmer_container_item_subtext_margin_top">5dp</dimen>
     <dimen name="shimmer_container_margin_top">5dp</dimen>
 
-    <!--Tv Shows-->
+    <!--Tv shows-->
     <dimen name="general_margin_top">5dp</dimen>
     <dimen name="main_container_margin_start">10dp</dimen>
     <dimen name="image_view_shows_padding">100dp</dimen>
     <dimen name="button_reconnect_text_size">24sp</dimen>
 
-    <!--Movies-->
+    <!--movies-->
     <dimen name="scroll_view_margin_top">5dp</dimen>
     <dimen name="scroll_view_container_margin_start">10dp</dimen>
     <dimen name="recycler_view_general_margin_top">5dp</dimen>

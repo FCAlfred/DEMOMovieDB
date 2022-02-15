@@ -13,4 +13,7 @@
     <string name="most_popular_movies">Most Popular Movies</string>
     <string name="rated_movies">Rated Movies</string>
     <string name="best_rated_movies">Best Rated Movies</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="offline_mode">OFFLINE MODE</string>
 </resources>

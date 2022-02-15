@@ -7,8 +7,7 @@
     android:background="@color/black"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".view.movies.fragment.DetailsFragment"
-    tools:ignore="ContentDescription">
+    tools:context=".view.shows.fragment.DetailsShowFragment">
 
     <ImageView
         android:id="@+id/image_view_movie_poster"
@@ -117,5 +116,6 @@
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintStart_toStartOf="@+id/image_view_movie_front"
         app:layout_constraintTop_toBottomOf="@+id/image_view_movie_front" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

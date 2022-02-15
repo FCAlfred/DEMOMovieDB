@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.fred.demomoviedb.databinding.ActivityMainBinding
 import com.fred.demomoviedb.view.adapter.ViewPagerAdapter
-import com.fred.demomoviedb.view.fragment.MoviesFragment
-import com.fred.demomoviedb.view.fragment.TvShowsFragment
+import com.fred.demomoviedb.view.movies.fragment.MoviesFragment
+import com.fred.demomoviedb.view.shows.fragment.TvShowsFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.fred.demomoviedb.view.adapter
+package com.fred.demomoviedb.view.movies.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

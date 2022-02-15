@@ -1,4 +1,4 @@
-package com.fred.demomoviedb.view.fragment
+package com.fred.demomoviedb.view.movies.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,19 +9,22 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fred.demomoviedb.R
+import com.fred.demomoviedb.components.Movies
 import com.fred.demomoviedb.databinding.FragmentDetailsBinding
-import com.fred.demomoviedb.model.DataSource
 import com.fred.demomoviedb.model.Movie
-import com.fred.demomoviedb.usecases.MoviesRepository
+import com.fred.demomoviedb.model.RatedMovie
+import com.fred.demomoviedb.usecases.network.MoviesRepository.getRecommendationMovies
 import com.fred.demomoviedb.utils.setGoneVisibility
 import com.fred.demomoviedb.utils.setImage
 import com.fred.demomoviedb.utils.setVisible
-import com.fred.demomoviedb.view.adapter.MoviesAdapter
+import com.fred.demomoviedb.view.movies.adapter.MoviesAdapter
+import com.fred.demomoviedb.view.movies.adapter.MoviesRatedAdapter
 import com.fred.demomoviedb.viewModel.MovieViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 
-class DetailsFragment(private val source: DataSource) : Fragment(), MoviesAdapter.MovieActions {
+class DetailsFragment(private val MovieType: Movies) : Fragment(), MoviesAdapter.MovieActions,
+    MoviesRatedAdapter.MovieActions {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
@@ -48,6 +51,10 @@ class DetailsFragment(private val source: DataSource) : Fragment(), MoviesAdapte
         movieViewModel.setMovieSelected(selectedMovie)
     }
 
+    override fun onClickedRatedMovie(selectedMovie: RatedMovie) {
+        movieViewModel.setRatedMovieSelected(selectedMovie)
+    }
+
     private fun initComponents() {
         var isRecyclerVisible = false
         mRecommendationsMoviesAdapter = MoviesAdapter(mutableListOf(), this@DetailsFragment)
@@ -71,49 +78,56 @@ class DetailsFragment(private val source: DataSource) : Fragment(), MoviesAdapte
     }
 
     private fun setObservers() {
-        movieViewModel.currentMovieSelected.observe(viewLifecycleOwner) {
-            binding.apply {
-                setImage(
-                    requireContext(),
-                    resources.getString(R.string.url_load_image) + it.backdropPath,
-                    imageViewMoviePoster
-                )
-                setImage(
-                    requireContext(),
-                    resources.getString(R.string.url_load_image) + it.posterPath,
-                    imageViewMovieFront
-                )
-                imageViewMovieFront.clipToOutline = true
-                textViewMovieDetailsTitle.text = it.title
-                textViewMovieDetailsScore.text = it.popularity.toString()
-                textViewMovieDetailsVote.text = it.rating.toString()
-                textViewMovieDescription.text = it.overview
-
-                recyclerRecommendation.layoutManager = recommendedMoviesLayout
-                recyclerRecommendation.adapter = mRecommendationsMoviesAdapter
-            }
-            if (source.name == "MOVIE") {
+        if (MovieType.name == Movies.POPULAR.name) {
+            movieViewModel.currentMovieSelected.observe(viewLifecycleOwner) {
+                binding.apply {
+                    setImage(
+                        requireContext(),
+                        resources.getString(R.string.url_load_image) + it.backdropPath,
+                        imageViewMoviePoster
+                    )
+                    setImage(
+                        requireContext(),
+                        resources.getString(R.string.url_load_image) + it.posterPath,
+                        imageViewMovieFront
+                    )
+                    imageViewMovieFront.clipToOutline = true
+                    textViewMovieDetailsTitle.text = it.title
+                    textViewMovieDetailsScore.text = it.popularity.toString()
+                    textViewMovieDetailsVote.text = it.rating.toString()
+                    textViewMovieDescription.text = it.overview
+                }
                 getRecommendationMovies(it.id)
-            } else {
-                getRecommendationShow(it.id)
+            }
+        } else {
+            movieViewModel.currentRatedMovieSelected.observe(viewLifecycleOwner) {
+                binding.apply {
+                    setImage(
+                        requireContext(),
+                        resources.getString(R.string.url_load_image) + it.backdropPath,
+                        imageViewMoviePoster
+                    )
+                    setImage(
+                        requireContext(),
+                        resources.getString(R.string.url_load_image) + it.posterPath,
+                        imageViewMovieFront
+                    )
+                    imageViewMovieFront.clipToOutline = true
+                    textViewMovieDetailsTitle.text = it.title
+                    textViewMovieDetailsScore.text = it.popularity.toString()
+                    textViewMovieDetailsVote.text = it.rating.toString()
+                    textViewMovieDescription.text = it.overview
+                }
+                getRecommendationMovies(it.id)
             }
         }
+        binding.recyclerRecommendation.layoutManager = recommendedMoviesLayout
+        binding.recyclerRecommendation.adapter = mRecommendationsMoviesAdapter
     }
 
     private fun getRecommendationMovies(id: Long) {
         movieViewModel.viewModelScope.launch {
-            MoviesRepository.getRecommendationMovies(
-                id,
-                recommendedPage,
-                onSuccess = ::onRecommendationMoviesFetched,
-                onError = ::onError
-            )
-        }
-    }
-
-    private fun getRecommendationShow(id: Long) {
-        movieViewModel.viewModelScope.launch {
-            MoviesRepository.getRecommendationShow(
+            getRecommendationMovies(
                 id,
                 recommendedPage,
                 onSuccess = ::onRecommendationMoviesFetched,
@@ -124,14 +138,15 @@ class DetailsFragment(private val source: DataSource) : Fragment(), MoviesAdapte
 
     private fun onRecommendationMoviesFetched(movies: List<Movie>) {
         mRecommendationsMoviesAdapter.appendMovies(movies)
+        binding.button.setGoneVisibility(false)
     }
 
     private fun onError() {
-        Toasty.error(requireContext(), "NO CONNECTION", Toasty.LENGTH_LONG, true).show()
+        binding.button.setGoneVisibility(true)
     }
 
     companion object {
         val NAME: String = DetailsFragment::class.java.simpleName
-        fun newInstance(source: DataSource) = DetailsFragment(source)
+        fun newInstance(type: Movies) = DetailsFragment(type)
     }
 }

@@ -1,6 +1,9 @@
-package com.fred.demomoviedb.usecases
+package com.fred.demomoviedb.usecases.network
 
 import com.fred.demomoviedb.model.GetMoviesResponse
+import com.fred.demomoviedb.model.GetRatedMoviesResponse
+import com.fred.demomoviedb.model.GetRatedShowsResponse
+import com.fred.demomoviedb.model.GetShowsResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,7 +20,7 @@ interface Api {
     fun getTopRatedMovies(
         @Query("api_key") apiKey: String = "6288303bc29b854da7570e8cd5f1ecc0",
         @Query("page") page: Int
-    ): Call<GetMoviesResponse>
+    ): Call<GetRatedMoviesResponse>
 
     @GET("movie/{movie_id}/recommendations")
     fun getRecommendationMovies(
@@ -30,18 +33,25 @@ interface Api {
     fun getPopularShows(
         @Query("api_key") apiKey: String = "6288303bc29b854da7570e8cd5f1ecc0",
         @Query("page") page: Int
-    ): Call<GetMoviesResponse>
+    ): Call<GetShowsResponse>
 
     @GET("tv/top_rated")
     fun getRatedShows(
         @Query("api_key") apiKey: String = "6288303bc29b854da7570e8cd5f1ecc0",
         @Query("page") page: Int
-    ): Call<GetMoviesResponse>
+    ): Call<GetRatedShowsResponse>
 
     @GET("tv/{tv_id}/recommendations")
     fun getRecommendationShow(
         @Path("tv_id") tvId: Long,
         @Query("api_key") apiKey: String = "6288303bc29b854da7570e8cd5f1ecc0",
         @Query("page") page: Int
-    ): Call<GetMoviesResponse>
+    ): Call<GetShowsResponse>
+
+    @GET("tv/{tv_id}/recommendations")
+    fun getRecommendationRatedShow(
+        @Path("tv_id") tvId: Long,
+        @Query("api_key") apiKey: String = "6288303bc29b854da7570e8cd5f1ecc0",
+        @Query("page") page: Int
+    ): Call<GetRatedShowsResponse>
 }
